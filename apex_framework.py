@@ -42,8 +42,8 @@ from enum import Enum, auto
 # CONFIGURATION
 # ------------------------------------------------------------------------
 
-REPO_URL = "https://github.com/yourusername/apex-multi-tools"
-REPO_RAW_BASE = "https://raw.githubusercontent.com/yourusername/apex-multi-tools/main"
+REPO_URL = "https://github.com/multitools-ap-mvp/apex-multi-tools"
+REPO_RAW_BASE = "https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main"
 PROXY_LIST_URL = f"{REPO_RAW_BASE}/config/proxies.txt"
 
 FRAMEWORK_DIR = Path.home() / "ApexMultiTools"
