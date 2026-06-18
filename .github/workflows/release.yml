@@ -1,1 +1,167 @@
+name: Build & Release
 
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.4.0-beta)'
+        required: true
+        default: 'v0.4.0-beta'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort rich pyyaml
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      - name: Check formatting with black
+        run: black --check --diff .
+
+      - name: Check imports with isort
+        run: isort --check-only --diff .
+
+      - name: Syntax check
+        run: python -m py_compile apex_framework.py bootstrap.py
+
+  build-standalone:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: |
+          pip install pyinstaller rich pyyaml
+
+      - name: Build standalone executable
+        run: |
+          pyinstaller --onefile --name apex-framework             --add-data "config:config"             --hidden-import rich             --hidden-import yaml             apex_framework.py
+
+      - name: Build bootstrap executable
+        run: |
+          pyinstaller --onefile --name apex-bootstrap             bootstrap.py
+
+      - name: Create release archives
+        run: |
+          mkdir -p dist/archives
+          cd dist
+          tar -czf archives/apex-framework-linux-amd64.tar.gz apex-framework
+          tar -czf archives/apex-bootstrap-linux-amd64.tar.gz apex-bootstrap
+          zip archives/apex-framework-linux-amd64.zip apex-framework
+          zip archives/apex-bootstrap-linux-amd64.zip apex-bootstrap
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-builds
+          path: dist/archives/
+
+  release:
+    needs: build-standalone
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: apex-builds
+          path: dist/archives/
+
+      - name: Generate release notes
+        run: |
+          echo "## Apex Multi Tools ${{ github.ref_name }}" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Quick Start" >> RELEASE_NOTES.md
+          echo '```bash' >> RELEASE_NOTES.md
+          echo '# Bootstrap (recommended)' >> RELEASE_NOTES.md
+          echo 'curl -fsSL https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/apex-bootstrap-linux-amd64.tar.gz | tar -xz' >> RELEASE_NOTES.md
+          echo './apex-bootstrap' >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Files" >> RELEASE_NOTES.md
+          echo "- \`apex-framework\` — Standalone executable (no Python needed)" >> RELEASE_NOTES.md
+          echo "- \`apex-bootstrap\` — Tiny launcher that downloads framework" >> RELEASE_NOTES.md
+          echo "- \`apex_config.yaml\` — Sample configuration file" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Changelog" >> RELEASE_NOTES.md
+          cat CHANGELOG.md | head -n 50 >> RELEASE_NOTES.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE_NOTES.md
+          files: |
+            dist/archives/*.tar.gz
+            dist/archives/*.zip
+            apex_config.yaml
+            config/proxies.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-build:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
