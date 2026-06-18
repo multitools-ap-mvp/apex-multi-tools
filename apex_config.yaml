@@ -1,0 +1,112 @@
+# Apex Multi Tools — Sample Configuration File
+# Version: 0.4.0-beta
+# Usage: python3 apex_framework.py --config apex_config.yaml
+
+# ==============================================================================
+# SECURITY LAYER (runs FIRST, before any network operations)
+# ==============================================================================
+security:
+  enabled: true
+  tools:
+    - "Proxychains4"
+    - "MAC Changer"
+    - "Tor"
+    - "UFW Firewall"
+    - "WireGuard"
+    - "Nmap"
+
+# ==============================================================================
+# BASE PACKAGES
+# ==============================================================================
+packages:
+  selected:
+    - "Git"
+    - "Curl"
+    - "Wget"
+    - "Build Essentials"
+    - "Python3 & pip"
+    - "Python venv"
+    - "Vim"
+    - "htop"
+    - "Net-tools"
+    - "OpenSSH"
+    - "Flatpak"
+    - "Unzip"
+    - "jq"
+    - "Tmux"
+    - "Tree"
+    - "Neofetch"
+    - "Zsh"
+    - "FZF"
+    - "Ripgrep"
+    - "Bat"
+
+# ==============================================================================
+# TOOL PROFILES
+# ==============================================================================
+tools:
+  # Kali-style penetration testing tools
+  kali:
+    - "Nmap"
+    - "Wireshark"
+    - "Hydra"
+    - "SQLMap"
+    - "John the Ripper"
+    - "Hashcat"
+    - "Aircrack-ng"
+    - "Nikto"
+    - "Gobuster"
+    - "Masscan"
+    - "DIRB"
+    - "WPScan"
+    - "Binwalk"
+    - "Foremost"
+    - "Steghide"
+    - "ExifTool"
+
+  # Development tools
+  development:
+    - "VS Code:"
+    - "Docker"
+    - "Node.js (LTS)"
+    - "NPM"
+    - "Yarn"
+    - "PNPM"
+    - "PostgreSQL"
+    - "MySQL"
+    - "MongoDB"
+    - "Redis"
+    - "SQLite3"
+    - "Go"
+    - "Rust"
+    - "DBeaver"
+    - "Postman"
+    - "Insomnia"
+    - "Python Poetry"
+    - "Pyenv"
+    - "NVM"
+    - "GitHub CLI"
+    - "Lazygit"
+    - "Neovim"
+    - "Helix"
+
+# ==============================================================================
+# ACCOUNT LOGINS
+# ==============================================================================
+accounts:
+  login:
+    - "GitHub (gh CLI)"
+    - "Google Account (browser)"
+    - "Docker Hub"
+    - "NPM"
+    - "Heroku"
+    - "AWS CLI"
+    - "Azure CLI"
+
+# ==============================================================================
+# GOOGLE DRIVE SYNC
+# ==============================================================================
+gdrive:
+  remote: "gdrive"                    # rclone remote name
+  path: "Backups/MintLive"            # path within Drive (blank = root)
+  dest: "~/Desktop/Backup-GDrive"     # local destination
