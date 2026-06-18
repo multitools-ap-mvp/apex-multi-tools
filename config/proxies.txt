@@ -1,0 +1,23 @@
+# Apex Multi Tools — Proxy List for Proxychains
+# Version: 0.4.0-beta
+# Format: type host port [user pass]
+# This file is fetched from the repo and auto-loaded into proxychains config
+
+# ==============================================================================
+# TOR (LOCAL) — Always available if Tor service is running
+# ==============================================================================
+socks5  127.0.0.1  9050
+
+# ==============================================================================
+# PUBLIC PROXIES — Rotate these periodically
+# Add your own proxies below. Remove comments to activate.
+# ==============================================================================
+# socks5  proxy1.example.com  1080
+# socks5  proxy2.example.com  1080
+# socks4  proxy3.example.com  1080
+# http    proxy4.example.com  8080
+
+# ==============================================================================
+# PREMIUM PROXIES — Add your paid proxy service endpoints here
+# ==============================================================================
+# socks5  user:pass@premium.proxy.com  1080
