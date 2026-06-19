@@ -91,8 +91,6 @@ def install_deps():
     """Install Python dependencies if needed."""
     deps = ["rich", "pyyaml"]
     try:
-        import rich
-        import yaml
         print("[*] Dependencies already satisfied")
         return
     except ImportError:
