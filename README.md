@@ -1,9 +1,9 @@
 # Apex Multi Tools — Interactive CLI Framework
 
-[![Version](https://img.shields.io/badge/version-0.4.0--beta-red)](https://github.com/yourusername/apex-multi-tools/releases)
+[![Version](https://img.shields.io/badge/version-0.4.0--beta-red)](https://github.com/multitools-ap-mvp/apex-multi-tools/releases)
 [![Python](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Build](https://github.com/yourusername/apex-multi-tools/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/apex-multi-tools/actions/workflows/release.yml)
+[![Build](https://github.com/multitools-ap-mvp/apex-multi-tools/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/apex-multi-tools/actions/workflows/release.yml)
 
 > **Professional environment bootstrapper for Linux Mint live USB sessions.**
 
@@ -22,13 +22,13 @@
 ### One-liner Bootstrap (Recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/apex-multi-tools/main/bootstrap.py | python3
+curl -fsSL https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main/bootstrap.py | python3
 ```
 
 ### Manual Clone & Run
 
 ```bash
-git clone https://github.com/yourusername/apex-multi-tools.git ~/ApexMultiTools
+git clone https://github.com/multitools-ap-mvp/apex-multi-tools.git ~/ApexMultiTools
 cd ~/ApexMultiTools
 python3 apex_framework.py
 ```
@@ -104,7 +104,7 @@ python3 apex_framework.py --config apex_config.yaml
 ### Method 1: Bootstrap (Recommended for Live USB)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/apex-multi-tools/main/bootstrap.py | python3
+curl -fsSL https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main/bootstrap.py | python3
 ```
 
 The bootstrap script:
@@ -119,7 +119,7 @@ The bootstrap script:
 Download from [Releases](https://github.com/yourusername/apex-multi-tools/releases):
 
 ```bash
-wget https://github.com/yourusername/apex-multi-tools/releases/download/v0.4.0-beta/apex-framework-linux-amd64.tar.gz
+wget https://github.com/multitools-ap-mvp/apex-multi-tools/releases/download/v0.4.0-beta/apex-framework-linux-amd64.tar.gz
 tar -xzf apex-framework-linux-amd64.tar.gz
 ./apex-framework
 ```
@@ -127,8 +127,8 @@ tar -xzf apex-framework-linux-amd64.tar.gz
 ### Method 3: Docker
 
 ```bash
-docker pull ghcr.io/yourusername/apex-multi-tools:v0.4.0-beta
-docker run -it --rm ghcr.io/yourusername/apex-multi-tools:v0.4.0-beta
+docker pull ghcr.io/multitools-ap-mvp/apex-multi-tools:v0.4.0-beta
+docker run -it --rm ghcr.io/multitools-ap-mvp/apex-multi-tools:v0.4.0-beta
 ```
 
 ### Method 4: pip (Future)
