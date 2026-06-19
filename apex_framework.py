@@ -48,13 +48,15 @@ from typing import Callable, List, Optional
 
 VERSION = "2.0"
 try:
-    from rich.console import Console
-    from rich.table import Table
     from rich import box
+    from rich.console import Console
     from rich.prompt import IntPrompt
+    from rich.table import Table
 
     RICH_AVAILABLE = True
     console = Console()
+
+   
 except ImportError:
     RICH_AVAILABLE = False
     console = None
