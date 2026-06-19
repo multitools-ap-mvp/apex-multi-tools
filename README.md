@@ -6,7 +6,14 @@
 [![Build](https://github.com/yourusername/apex-multi-tools/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/apex-multi-tools/actions/workflows/release.yml)
 
 > **Professional environment bootstrapper for Linux Mint live USB sessions.**
-> Security-first, config-driven, and extensible.
+
+> **Security-first, config-driven, and extensible.**
+
+> **Boot up && Setup up your perfect Enviorment in just a few click**
+
+> **Save your current Project Enviorment .Config**
+
+> **Use our CLi to boot up your Enviorment & Tools with 1 string**     
 
 ---
 
@@ -135,58 +142,9 @@ apex-setup
 
 ## Configuration File
 
-Create `apex_config.yaml`:
+**apex_config.yaml Config**
 
-```yaml
-# Security layer (runs FIRST)
-security:
-  enabled: true
-  tools:
-    - "Proxychains4"
-    - "MAC Changer"
-    - "Tor"
-    - "UFW Firewall"
 
-# Base packages
-packages:
-  selected:
-    - "Git"
-    - "Curl"
-    - "Python3 & pip"
-    - "Tmux"
-    - "Neovim"
-
-# Tool profiles
-tools:
-  kali:
-    - "Nmap"
-    - "Wireshark"
-    - "Hydra"
-    - "SQLMap"
-  development:
-    - "VS Code:"
-    - "Docker"
-    - "Node.js (LTS)"
-    - "PostgreSQL"
-    - "Redis"
-
-# Account logins
-accounts:
-  login:
-    - "GitHub (gh CLI)"
-    - "Docker Hub"
-
-# Google Drive sync
-gdrive:
-  remote: "gdrive"
-  path: "Backups/MintLive"
-  dest: "~/Desktop/Backup-GDrive"
-```
-
-Run with:
-```bash
-python3 apex_framework.py --config apex_config.yaml
-```
 
 ---
 
