@@ -6,7 +6,7 @@
  One-liner bootstrap for Linux Mint live USB.
 
  Usage:
-   curl -fsSL https://raw.githubusercontent.com/yourusername/apex-multi-tools/main/bootstrap.py | python3
+   curl -fsSL https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main/bootstrap.py | python3
 
  What it does:
    1. Checks Python 3.8+ is available
@@ -24,8 +24,8 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
-REPO_URL = "https://github.com/yourusername/apex-multi-tools.git"
-REPO_RAW = "https://raw.githubusercontent.com/yourusername/apex-multi-tools/main"
+REPO_URL = "https://github.com/multitools-ap-mvp/apex-multi-tools.git"
+REPO_RAW = "https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main"
 FRAMEWORK_DIR = Path.home() / "ApexMultiTools"
 FRAMEWORK_SCRIPT = FRAMEWORK_DIR / "apex_framework.py"
 
