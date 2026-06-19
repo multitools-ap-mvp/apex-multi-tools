@@ -37,7 +37,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Callable
+from typing import List, Optional, Callable
 from enum import Enum, auto
 
 # ------------------------------------------------------------------------
@@ -45,12 +45,12 @@ from enum import Enum, auto
 # ------------------------------------------------------------------------
 
 VERSION = "2.0"
-
 try:
     from rich.console import Console
     from rich.table import Table
     from rich import box
     from rich.prompt import IntPrompt
+
     RICH_AVAILABLE = True
     console = Console()
 except ImportError:
@@ -60,40 +60,64 @@ except ImportError:
     box = None
     IntPrompt = None
 
+
 def tui_info(msg):
-    if RICH_AVAILABLE: console.print(f"[cyan][*][/cyan] {msg}")
-    else: info(msg)
+    if RICH_AVAILABLE:
+        console.print(f"[cyan][*][/cyan] {msg}")
+    else:
+        info(msg)
+
 
 def tui_ok(msg):
-    if RICH_AVAILABLE: console.print(f"[green][✓][/green] {msg}")
-    else: ok(msg)
+    if RICH_AVAILABLE:
+        console.print(f"[green][✓][/green] {msg}")
+    else:
+        ok(msg)
+
 
 def tui_warn(msg):
-    if RICH_AVAILABLE: console.print(f"[yellow][!][/yellow] {msg}")
-    else: warn(msg)
+    if RICH_AVAILABLE:
+        console.print(f"[yellow][!][/yellow] {msg}")
+    else:
+        warn(msg)
+
 
 def tui_err(msg):
-    if RICH_AVAILABLE: console.print(f"[red][ERROR][/red] {msg}")
-    else: err(msg)
+    if RICH_AVAILABLE:
+        console.print(f"[red][ERROR][/red] {msg}")
+    else:
+        err(msg)
+
 
 def tui_success(msg):
-    if RICH_AVAILABLE: console.print(f"[bold green][✓] {msg}[/bold green]")
-    else: success(msg)
+    if RICH_AVAILABLE:
+        console.print(f"[bold green][✓] {msg}[/bold green]")
+    else:
+        success(msg)
+
 
 def tui_header(text):
-    if RICH_AVAILABLE: console.rule(f"[bold red]{text}")
-    else: header(text)
+    if RICH_AVAILABLE:
+        console.rule(f"[bold red]{text}")
+    else:
+        header(text)
+
 
 def tui_banner():
-    if RICH_AVAILABLE: console.print("\n[bold red]APEX MULTI TOOLS — INTERACTIVE CLI FRAMEWORK[/bold red]\n")
-    else: banner()
+    if RICH_AVAILABLE:
+        console.print(
+            "\n[bold red]APEX MULTI TOOLS — INTERACTIVE CLI FRAMEWORK[/bold red]\n"
+        )
+    else:
+        banner()
+
 
 def tui_ask_yes_no(prompt: str, default: bool = True) -> bool:
     return ask_yes_no(prompt, default=default)
 
+
 def tui_ask_input(prompt: str, default: str = "") -> str:
     return ask_input(prompt, default=default)
-
 
 # ------------------------------------------------------------------------
 # CONFIGURATION
@@ -325,82 +349,6 @@ def toggle_select(title, names, preselected=None, all_default=True, descriptions
 # ------------------------------------------------------------------------
 # TUI HELPERS (Rich-based with fallback)
 # ------------------------------------------------------------------------
-def tui_info(msg):
-    """Info message with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print(f"[cyan][*][/cyan] {msg}")
-    else:
-        info(msg)
-
-
-def tui_err(msg):
-    """Error message with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print(f"[red][ERROR][/red] {msg}")
-    else:
-        err(msg)
-
-
-def tui_warn(msg):
-    """Warning message with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print(f"[yellow][!][/yellow] {msg}")
-    else:
-        warn(msg)
-
-
-def tui_ok(msg):
-    """Success message with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print(f"[green][✓][/green] {msg}")
-    else:
-        ok(msg)
-
-
-def tui_header(text):
-    """Header with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print(f"\n[bold red]{'═' * 70}[/bold red]")
-        console.print(f"[bold red]  {text}[/bold red]")
-        console.print(f"[bold red]{'═' * 70}[/bold red]\n")
-    else:
-        header(text)
-
-
-def tui_success(msg):
-    """Success message with TUI support."""
-    tui_ok(msg)
-
-
-def tui_ask_yes_no(prompt: str, default: bool = True) -> bool:
-    """Ask yes/no question with TUI support."""
-    return ask_yes_no(prompt, default)
-
-
-def tui_ask_input(prompt: str, default: str = "") -> str:
-    """Ask for input with TUI support."""
-    return ask_input(prompt, default)
-
-
-def tui_banner():
-    """Display banner with TUI support."""
-    if RICH_AVAILABLE and console:
-        console.print("[red]" + r"""
-   ▄▄▄       ██▓███  ▓█████ ▒██   ██▒
-  ▒████▄    ▓██░  ██▒▓█   ▀ ▒▒ █ █ ▒░
-  ▒██  ▀█▄  ▓██░ ██▓▒▒███   ░░  █   ░
-  ░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄  ░ █ █ ▒
-   ▓█   ▓██▒▒██▒ ░  ░░▒████▒▒██▒ ▒██▒
-   ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░▒▒ ░ ░▓ ░
-    ▒   ▒▒ ░░▒ ░      ░ ░  ░░░   ░▒ ░
-    ░   ▒   ░░          ░    ░    ░
-        ░  ░               ░    ░
-""" + "[/red]")
-        console.print("[white bold]        MULTI TOOLS — INTERACTIVE CLI FRAMEWORK[/white bold]")
-        console.print("[grey]        Linux Mint Live USB Environment Bootstrapper[/grey]")
-        console.print("[grey]        v2.0 — Security-First | Config-Driven | Extensible[/grey]\n")
-    else:
-        banner()
 
 
 # ------------------------------------------------------------------------
