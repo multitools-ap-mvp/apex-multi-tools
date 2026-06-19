@@ -24,7 +24,6 @@ import sys
 import urllib.request
 from pathlib import Path
 
-
 REPO_URL = "https://github.com/multitools-ap-mvp/apex-multi-tools.git"
 REPO_RAW = "https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main"
 FRAMEWORK_DIR = Path.home() / "ApexMultiTools"
