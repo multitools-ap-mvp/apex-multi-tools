@@ -40,20 +40,60 @@ from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Callable
 from enum import Enum, auto
 
-# VERSION
+# ------------------------------------------------------------------------
+# VERSION & TUI (Rich) SUPPORT
+# ------------------------------------------------------------------------
+
 VERSION = "2.0"
 
-# Rich library imports with fallback
 try:
     from rich.console import Console
     from rich.table import Table
-    from rich.prompt import IntPrompt
     from rich import box
+    from rich.prompt import IntPrompt
     RICH_AVAILABLE = True
     console = Console()
 except ImportError:
     RICH_AVAILABLE = False
     console = None
+    Table = None
+    box = None
+    IntPrompt = None
+
+def tui_info(msg):
+    if RICH_AVAILABLE: console.print(f"[cyan][*][/cyan] {msg}")
+    else: info(msg)
+
+def tui_ok(msg):
+    if RICH_AVAILABLE: console.print(f"[green][✓][/green] {msg}")
+    else: ok(msg)
+
+def tui_warn(msg):
+    if RICH_AVAILABLE: console.print(f"[yellow][!][/yellow] {msg}")
+    else: warn(msg)
+
+def tui_err(msg):
+    if RICH_AVAILABLE: console.print(f"[red][ERROR][/red] {msg}")
+    else: err(msg)
+
+def tui_success(msg):
+    if RICH_AVAILABLE: console.print(f"[bold green][✓] {msg}[/bold green]")
+    else: success(msg)
+
+def tui_header(text):
+    if RICH_AVAILABLE: console.rule(f"[bold red]{text}")
+    else: header(text)
+
+def tui_banner():
+    if RICH_AVAILABLE: console.print("\n[bold red]APEX MULTI TOOLS — INTERACTIVE CLI FRAMEWORK[/bold red]\n")
+    else: banner()
+
+def tui_ask_yes_no(prompt: str, default: bool = True) -> bool:
+    return ask_yes_no(prompt, default=default)
+
+def tui_ask_input(prompt: str, default: str = "") -> str:
+    return ask_input(prompt, default=default)
+
 
 # ------------------------------------------------------------------------
 # CONFIGURATION
@@ -1198,9 +1238,9 @@ def step_accounts():
 
     ok("Account logins complete")
 
-
 def step_gdrive_sync():
-    """Step 7 — Google Drive Sync with rclone."""
+    tui_header("STEP 7 — GOOGLE DRIVE SYNC")
+    
     if STATE.config_mode:
         if not STATE.gdrive_remote:
             tui_warn("No Google Drive config in file, skipping")
@@ -1211,19 +1251,18 @@ def step_gdrive_sync():
 
     if not check_installed("rclone"):
         tui_info("Installing rclone...")
-        run(["apt-get", "install", "-y", "rclone"], sudo=True, check=False)
+        subprocess.run(["apt-get", "install", "-y", "rclone"], check=False)
         if not check_installed("rclone"):
-            subprocess.run("curl https://rclone.org/install.sh | sudo bash", shell=True, check=False)
+            subprocess.run("curl https://rclone.org/install.sh | bash", shell=True, check=False)
 
     remotes = []
-    result = subprocess.run(["rclone", "listremotes"], text=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(["rclone", "listremotes"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     remotes = [r.strip().rstrip(":") for r in result.stdout.splitlines() if r.strip()]
 
     remote_name = STATE.gdrive_remote
 
     if remotes and not remote_name:
-        if RICH_AVAILABLE and STATE.tui_mode:
+        if RICH_AVAILABLE and getattr(STATE, 'tui_mode', True):
             console.print("\n[bold white]Existing remotes:[/bold white]")
             for i, r in enumerate(remotes, 1):
                 console.print(f"  [red]{i}[/red]. {r}")
@@ -1232,11 +1271,11 @@ def step_gdrive_sync():
             if 1 <= choice <= len(remotes):
                 remote_name = remotes[choice - 1]
         else:
-            print(f"\n{C.WHITE}Existing remotes:{C.RESET}")
+            print("\nExisting remotes:")
             for i, r in enumerate(remotes, 1):
-                print(f"  {C.RED}{i}{C.RESET}. {r}")
-            print(f"  {C.RED}0{C.RESET}. Create new remote")
-            choice = input(f"{C.WHITE}> {C.RESET}").strip()
+                print(f"  {i}. {r}")
+            print("  0. Create new remote")
+            choice = input("> ").strip()
             if choice.isdigit() and 1 <= int(choice) <= len(remotes):
                 remote_name = remotes[int(choice) - 1]
 
@@ -1244,35 +1283,21 @@ def step_gdrive_sync():
         tui_warn("Launching rclone config...")
         tui_info("Choose 'New remote' -> type 'drive' -> follow browser auth")
         subprocess.run(["rclone", "config"])
-        result = subprocess.run(["rclone", "listremotes"], text=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(["rclone", "listremotes"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         remotes = [r.strip().rstrip(":") for r in result.stdout.splitlines() if r.strip()]
         if not remotes:
             tui_err("No remote created, aborting")
             return
-        if RICH_AVAILABLE and STATE.tui_mode:
-            console.print("\n[bold white]Available remotes:[/bold white]")
-            for i, r in enumerate(remotes, 1):
-                console.print(f"  [red]{i}[/red]. {r}")
-            choice = IntPrompt.ask("Pick remote", default=1)
-            if 1 <= choice <= len(remotes):
-                remote_name = remotes[choice - 1]
-        else:
-            print(f"\n{C.WHITE}Available remotes:{C.RESET}")
-            for i, r in enumerate(remotes, 1):
-                print(f"  {C.RED}{i}{C.RESET}. {r}")
-            choice = input(f"{C.WHITE}> {C.RESET}").strip()
-            if choice.isdigit() and 1 <= int(choice) <= len(remotes):
-                remote_name = remotes[int(choice) - 1]
-            else:
-                tui_err("Invalid choice, aborting")
-                return
+        remote_name = remotes[0] # Default to the first created remote
 
-    drive_path = STATE.gdrive_path or tui_ask_input("Drive source path (blank = root)", default="")
+    drive_path = getattr(STATE, 'gdrive_path', None) or tui_ask_input("Drive source path (blank = root)", default="")
     source = f"{remote_name}:{drive_path}" if drive_path else f"{remote_name}:"
 
-    dest = Path(STATE.gdrive_dest) if STATE.gdrive_dest else DEFAULT_GDRIVE_DEST
-    if not STATE.gdrive_dest:
+    # Define a fallback destination if DEFAULT_GDRIVE_DEST isn't set earlier
+    default_dest = Path.home() / "GoogleDrive"
+    dest = Path(getattr(STATE, 'gdrive_dest', None) or default_dest)
+    
+    if not getattr(STATE, 'gdrive_dest', None):
         dest_input = tui_ask_input("Local destination", default=str(dest))
         if dest_input:
             dest = Path(dest_input).expanduser()
@@ -1287,9 +1312,6 @@ def step_gdrive_sync():
     STATE.gdrive_remote = remote_name
     STATE.gdrive_path = drive_path
     STATE.gdrive_dest = str(dest)
-
-    tui_warn("On live USB, files will be wiped on reboot unless backed up")
-
 
 # ------------------------------------------------------------------------
 # MAIN
