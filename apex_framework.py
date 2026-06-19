@@ -3,7 +3,9 @@
 ================================================================================
  APEX MULTI TOOLS — INTERACTIVE CLI FRAMEWORK
 ================================================================================
- Professional environment bootstrapper for Linux Mint live USB.
+
+ Professional environment bootstrapper for Linux Mint live USB
+
 
  Modes:
    Interactive (default) — wizard-driven setup
