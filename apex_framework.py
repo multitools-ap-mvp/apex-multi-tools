@@ -40,8 +40,6 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Callable, List, Optional
 
-
-
 # ------------------------------------------------------------------------
 # VERSION & TUI (Rich) SUPPORT
 # ------------------------------------------------------------------------
@@ -141,7 +139,6 @@ MANIFEST_NAME = "apex_manifest.json"
 STATE_FILE = CACHE_DIR / "apex_state.json"
 
 DEFAULT_GDRIVE_DEST = Path.home() / "Desktop" / "Backup-GDrive"
-
 
 # ------------------------------------------------------------------------
 # COLOR THEME — Apex Red / Black
