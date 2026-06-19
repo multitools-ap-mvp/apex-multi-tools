@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""
-================================================================================
- APEX MULTI TOOLS — BOOTSTRAP LAUNCHER
-================================================================================
+"""  
+================================================================================  
+ APEX MULTI TOOLS — BOOTSTRAP LAUNCHER  
+================================================================================  
  One-liner bootstrap for Linux Mint live USB.
 
- Usage:
+ Usage:  
    curl -fsSL https://raw.githubusercontent.com/multitools-ap-mvp/apex-multi-tools/main/bootstrap.py | python3
 
- What it does:
-   1. Checks Python 3.8+ is available
-   2. Clones/pulls the framework repo to ~/ApexMultiTools
-   3. Installs required dependencies (pip packages if needed)
+ What it does:  
+   1. Checks Python 3.8+ is available  
+   2. Clones/pulls the framework repo to ~/ApexMultiTools  
+   3. Installs required dependencies (pip packages if needed)  
    4. Launches the main framework
 
- This file stays tiny (~3KB) so it downloads fast even on slow connections.
-================================================================================
+ This file stays tiny (~3KB) so it downloads fast even on slow connections.  
+================================================================================  
 """
 
 import os
@@ -35,9 +35,13 @@ MIN_PYTHON = (3, 8)
 def check_python():
     """Ensure Python 3.8+ is available."""
     if sys.version_info < MIN_PYTHON:
-        print(f"[ERROR] Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ required, found {sys.version_info.major}.{sys.version_info.minor}")
+        print(
+            f"[ERROR] Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ required, found {sys.version_info.major}.{sys.version_info.minor}"
+        )
         sys.exit(1)
-    print(f"[*] Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro} OK")
+    print(
+        f"[*] Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro} OK"
+    )
 
 
 def check_git():
@@ -57,21 +61,28 @@ def clone_or_update_repo():
         print(f"[*] Framework found at {FRAMEWORK_DIR}, pulling updates...")
         result = subprocess.run(
             ["git", "-C", str(FRAMEWORK_DIR), "pull", "--ff-only"],
-            capture_output=True, text=True
+            capture_output=True,
+            text=True,
         )
         if result.returncode == 0:
             print("[OK] Framework updated")
         else:
             print(f"[!] Pull failed: {result.stderr.strip()}")
             print("[*] Attempting force reset...")
-            subprocess.run(["git", "-C", str(FRAMEWORK_DIR), "fetch", "origin"], check=False)
-            subprocess.run(["git", "-C", str(FRAMEWORK_DIR), "reset", "--hard", "origin/main"], check=False)
+            subprocess.run(
+                ["git", "-C", str(FRAMEWORK_DIR), "fetch", "origin"], check=False
+            )
+            subprocess.run(
+                ["git", "-C", str(FRAMEWORK_DIR), "reset", "--hard", "origin/main"],
+                check=False,
+            )
     else:
         print(f"[*] Cloning framework to {FRAMEWORK_DIR}...")
         FRAMEWORK_DIR.parent.mkdir(parents=True, exist_ok=True)
         result = subprocess.run(
             ["git", "clone", "--depth=1", REPO_URL, str(FRAMEWORK_DIR)],
-            capture_output=True, text=True
+            capture_output=True,
+            text=True,
         )
         if result.returncode != 0:
             print(f"[ERROR] Clone failed: {result.stderr.strip()}")
@@ -79,8 +90,7 @@ def clone_or_update_repo():
             print("[*] Falling back to raw download...")
             FRAMEWORK_DIR.mkdir(parents=True, exist_ok=True)
             urllib.request.urlretrieve(
-                f"{REPO_RAW}/apex_framework.py",
-                FRAMEWORK_SCRIPT
+                f"{REPO_RAW}/apex_framework.py", FRAMEWORK_SCRIPT
             )
             print("[OK] Framework downloaded (raw)")
         else:
@@ -91,6 +101,9 @@ def install_deps():
     """Install Python dependencies if needed."""
     deps = ["rich", "pyyaml"]
     try:
+        import rich
+        import yaml
+
         print("[*] Dependencies already satisfied")
         return
     except ImportError:
@@ -98,17 +111,16 @@ def install_deps():
 
     print("[*] Installing Python dependencies...")
     subprocess.run(
-        [sys.executable, "-m", "pip", "install", "--user"] + deps,
-        check=False
+        [sys.executable, "-m", "pip", "install", "--user"] + deps, check=False
     )
     print("[OK] Dependencies installed")
 
 
 def launch_framework():
     """Run the main framework."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("  LAUNCHING APEX MULTI TOOLS FRAMEWORK")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
     # Pass through any CLI args
     args = " ".join(sys.argv[1:])
@@ -117,19 +129,21 @@ def launch_framework():
 
 
 def main():
-    print("""
-   ▄▄▄       ██▓███  ▓█████ ▒██   ██▒
-  ▒████▄    ▓██░  ██▒▓█   ▀ ▒▒ █ █ ▒░
-  ▒██  ▀█▄  ▓██░ ██▓▒▒███   ░░  █   ░
-  ░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄  ░ █ █ ▒
-   ▓█   ▓██▒▒██▒ ░  ░░▒████▒▒██▒ ▒██▒
-   ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░▒▒ ░ ░▓ ░
-    ▒   ▒▒ ░░▒ ░      ░ ░  ░░░   ░▒ ░
-    ░   ▒   ░░          ░    ░    ░
-        ░  ░               ░    ░
+    print(
+        """  
+   ▄▄▄       ██▓███  ▓█████ ▒██   ██▒  
+  ▒████▄    ▓██░  ██▒▓█   ▀ ▒▒ █ █ ▒░  
+  ▒██  ▀█▄  ▓██░ ██▓▒▒███   ░░  █   ░  
+  ░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄  ░ █ █ ▒  
+   ▓█   ▓██▒▒██▒ ░  ░░▒████▒▒██▒ ▒██▒  
+   ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░▒▒ ░ ░▓ ░  
+    ▒   ▒▒ ░░▒ ░      ░ ░  ░░░   ░▒ ░  
+    ░   ▒   ░░          ░    ░    ░  
+        ░  ░               ░    ░  
 
-        APEX MULTI TOOLS — BOOTSTRAP v0.4.0-beta
-    """)
+        APEX MULTI TOOLS — BOOTSTRAP v0.4.0-beta  
+"""
+    )
 
     check_python()
     check_git()
