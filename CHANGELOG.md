@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 🔄 Changelog
+
+### v2.1.0 — 2025-06-25
+- **New:** Locale / keyboard / timezone wizard (pre-boot, remembers last values)
+- **New:** `toggle_select` inline usage guide on every menu
+- **New:** Environment save/load — `--save-env`, `--load-env <name>`, `--list-envs`
+- **New:** `$USER-gdrive/` local GDrive mirror folder + `gdrive_sync.sh` helper
+- **Fix:** VS Code key had trailing colon — broken manifest serialisation
+- **Fix:** Pipe operators in subprocess lists (`|` passed as literal arg) — all install_cmd entries converted to shell strings
+- **Fix:** ProtonVPN keys missing from `SECURITY_TOOLS` — wizard checks were dead code
+- **Fix:** `logger` used before init — safe `_log()` wrapper added
+- **Fix:** `pick_backup_location()` silently returned `None` on bad input — now loops
+
+### v2.0.0
+- Full rewrite: dataclass state, Rich TUI support, retry logic, config file mode
+- Added Kali-style tool profiles, account login automation
+- rclone Google Drive sync
+
+
+---
+
 ## [0.4.0-beta] — 2026-06-18
 
 ### Added
